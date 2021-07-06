@@ -32,7 +32,11 @@ module.exports = {
   },
 
   resolve: {
-    modules: [path.resolve(__dirname, "node_modules")],
+    // extensions: [".jsx", ".js"],
+    modules: [
+      path.resolve("../../node_modules"),
+      path.resolve(__dirname, "node_modules"),
+    ],
   },
 
   module: {

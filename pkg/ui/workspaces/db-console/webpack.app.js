@@ -51,7 +51,7 @@ module.exports = (env, argv) => {
     entry: [path.resolve(__dirname, "./src/index.tsx")],
     output: {
       filename: "bundle.js",
-      path: path.resolve(__dirname, `dist${env.dist}`),
+      path: path.resolve(`../../dist${env.dist}`),
     },
 
     mode: argv.mode || "production",
@@ -151,14 +151,14 @@ module.exports = (env, argv) => {
     plugins: [
       new RemoveBrokenDependenciesPlugin(),
       // See "DLLs for speedy builds" in the README for details.
-      // new webpack.DllReferencePlugin({
-      //   context: path.resolve(__dirname, `dist${env.dist}`),
-      //   manifest: require(`./protos.${env.dist}.manifest.json`),
-      // }),
-      // new webpack.DllReferencePlugin({
-      //   context: path.resolve(__dirname, `dist${env.dist}`),
-      //   manifest: require("./vendor.oss.manifest.json"),
-      // }),
+      new webpack.DllReferencePlugin({
+        context: path.resolve(__dirname, `dist${env.dist}`),
+        manifest: require(`./protos.${env.dist}.manifest.json`),
+      }),
+      new webpack.DllReferencePlugin({
+        context: path.resolve(__dirname, `dist${env.dist}`),
+        manifest: require("./vendor.oss.manifest.json"),
+      }),
       new CopyWebpackPlugin([
         { from: path.resolve(__dirname, "favicon.ico"), to: "favicon.ico" },
       ]),
