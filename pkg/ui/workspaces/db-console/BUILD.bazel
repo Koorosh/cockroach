@@ -4,13 +4,13 @@ load("@npm//@bazel/typescript:index.bzl", "ts_project")
 
 webpack(
     name = "db_console_webpack",
-    outs = ["dist/main.js"],
+    output_dir = True,
     args = [
         "--config $(execpath webpack.app.js)",
         "--env.dist=ccl",
         "--mode",
         "production",
-        "-o $@",
+        "--env.output=$(RULEDIR)/db_console_webpack",
     ],
     data = [
         "src",
@@ -55,6 +55,7 @@ webpack(
         "@npm//protobufjs",
         "//pkg/ui:node_modules",
     ],
+    visibility = ["//visibility:public"],
 )
 
 js_library(

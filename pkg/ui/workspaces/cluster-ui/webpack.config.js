@@ -107,6 +107,7 @@ module.exports = {
         enforce: "pre",
         test: /\.js$/,
         loader: "source-map-loader",
+        exclude: /node_modules/,
       },
       { test: /\.css$/, use: [ "style-loader", "css-loader" ] },
     ],
@@ -144,7 +145,7 @@ module.exports = {
       root: "ReactDom",
     },
     // TODO (koorosh): commented out to make bazel build pass
-    "react-router-dom": "react-router-dom",
+    // "react-router-dom": "react-router-dom",
     "react-redux": "react-redux",
     "redux-saga": "redux-saga",
     "redux": "redux",

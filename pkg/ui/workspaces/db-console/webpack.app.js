@@ -51,7 +51,7 @@ module.exports = (env, argv) => {
     entry: [path.resolve(__dirname, "./src/index.tsx")],
     output: {
       filename: "bundle.js",
-      path: path.resolve(`../../dist${env.dist}`),
+      path: path.resolve(env.output || `../../dist${env.dist}`),
     },
 
     mode: argv.mode || "production",
@@ -124,12 +124,23 @@ module.exports = (env, argv) => {
         {
           test: /\.js$/,
           include: localRoots,
+          exclude: [
+            /node_modules/,
+            /src\/js/,
+            /ccl\/src\/js/,
+            /cluster-ui\/dist/,
+          ],
           use: ["cache-loader", "babel-loader"],
         },
         {
           test: /\.(ts|tsx)?$/,
           include: localRoots,
-          exclude: /\/node_modules/,
+          exclude: [
+            /node_modules/,
+            /src\/js/,
+            /ccl\/src\/js/,
+            /cluster-ui\/dist/,
+          ],
           use: [
             "cache-loader",
             "babel-loader",
@@ -143,26 +154,32 @@ module.exports = (env, argv) => {
           test: /\.js$/,
           loader: "source-map-loader",
           include: localRoots,
-          exclude: /\/node_modules/,
+          exclude: [
+            /node_modules/,
+            /src\/js/,
+            /ccl\/src\/js/,
+            /cluster-ui\/dist/,
+          ],
         },
       ],
     },
 
     plugins: [
       new RemoveBrokenDependenciesPlugin(),
+      // TODO (koorosh): exclude DLLPlugin when build with Bazel
       // See "DLLs for speedy builds" in the README for details.
-      new webpack.DllReferencePlugin({
-        context: path.resolve(__dirname, `dist${env.dist}`),
-        manifest: require(`./protos.${env.dist}.manifest.json`),
-      }),
-      new webpack.DllReferencePlugin({
-        context: path.resolve(__dirname, `dist${env.dist}`),
-        manifest: require("./vendor.oss.manifest.json"),
-      }),
+      // new webpack.DllReferencePlugin({
+      //   context: path.resolve(__dirname, `dist${env.dist}`),
+      //   manifest: require(`./protos.${env.dist}.manifest.json`),
+      // }),
+      // new webpack.DllReferencePlugin({
+      //   // context: path.resolve(__dirname, `dist${env.dist}`),
+      //   manifest: require(env.vendor_manifest || "./vendor.oss.manifest.json"),
+      // }),
       new CopyWebpackPlugin([
         { from: path.resolve(__dirname, "favicon.ico"), to: "favicon.ico" },
       ]),
-      new VisualizerPlugin({ filename: `../dist/stats.${env.dist}.html` }),
+      // new VisualizerPlugin({ filename: `../dist/stats.${env.dist}.html` }),
       // use WebpackBar instead of webpack dashboard to fit multiple webpack dev server outputs (db-console and cluster-ui)
       new WebpackBar({
         name: "db-console",
